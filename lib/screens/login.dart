@@ -5,15 +5,20 @@ import 'package:untitled/widgets/cust_text_button.dart';
 import 'package:untitled/widgets/cust_text_field.dart';
 import 'package:untitled/widgets/logo_text.dart';
 import 'package:untitled/services/services.dart';
-class SignInScreen extends StatefulWidget{
+import 'package:http/http.dart';
+
+class Login extends StatefulWidget{
+
+  const Login({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
-    return SignInScreenState();
+    return LoginState();
   }
 
 }
 
-class SignInScreenState extends State<SignInScreen>{
+class LoginState extends State<Login>{
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -56,13 +61,12 @@ class SignInScreenState extends State<SignInScreen>{
       ),
     );
   }
-  void OnClickSignIn(){
+  void OnClickSignIn() async {
     String username = _usernameController.text;
     String password = _passwordController.text;
-    print(username);
-    print(password);
-    if (false){
-      // Navigator.pushNamed(context, '/');
+    bool result = await ApiServices.login(username, password);
+    if (result){
+      Navigator.pushNamed(context, '/');
     }
 
   }

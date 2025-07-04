@@ -3,7 +3,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:untitled/screens/error_network_screen.dart';
+import 'package:untitled/screens/error.dart';
 
 class NetworkObserver{
   static bool _dialogShow = false;

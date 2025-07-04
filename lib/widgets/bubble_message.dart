@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 
 
 
-class Message extends StatefulWidget{
+class BubbleMessage extends StatefulWidget{
 
   final bool isMe;
   final String name;
   final String text;
-  final String type;
-  Message({this.isMe = true, this.name = "THANH NAM", required this.text, required this.type, super.key});
+  final int type;
+  BubbleMessage({this.isMe = true, this.name = "THANH NAM", required this.text, required this.type, super.key});
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return MessageState();
+    return BubbleMessageState();
   }
 
 }
 
-class MessageState extends State<Message>{
+class BubbleMessageState extends State<BubbleMessage>{
   late final bool isMe ;
   late final String name;
   late final String text;
-  late final String type;
+  late final int type;
 
   @override
   void initState() {

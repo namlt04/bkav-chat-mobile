@@ -2,9 +2,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:untitled/widgets/widgets.dart';
-
+import 'package:untitled/services/services.dart';
 
 class ContactList extends StatefulWidget{
+  final List<User> list;
+  const ContactList({Key? key, required this.list}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -26,16 +28,12 @@ class ContactListState extends State<ContactList>{
       children: [
         const CustText("Danh sach hop thoai", size: 20),
         Expanded(
-          child: ListView(
-              children: [
-                Contact("Le Thanh Nam"),
-                Contact("Bui Mai Quynh"),
-                Contact("Le Thanh Nam Quynh"),
-                Contact("Bui Mai Quynh"),
-                Contact("Le Thanh Nam Quynh"),
-                Contact("Bui Mai Quynh"),
-
-              ]
+          child: ListView.builder(
+            itemCount: widget.list.length,
+            itemBuilder: (context, index) {
+              final user = widget.list[index];
+              return Contact(user.username);
+            },
           ),
         ),
 

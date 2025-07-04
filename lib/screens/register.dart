@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/widgets/static_text.dart';
 import 'package:untitled/widgets/widgets.dart';
-
-class SignUpScreen extends StatefulWidget{
-  final TextEditingController _name = TextEditingController();
+import 'package:untitled/services/services.dart';
+class Register extends StatefulWidget{
+  Register({Key? key});
+  final TextEditingController _fullname = TextEditingController();
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _retype = TextEditingController();
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return SignUpScreenState();
+    return RegisterState();
   }
 
 }
-class SignUpScreenState extends State<SignUpScreen>{
+class RegisterState extends State<Register>{
+  bool _isShow = false;
+  String _text = "";
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
   @override
@@ -38,11 +41,11 @@ class SignUpScreenState extends State<SignUpScreen>{
                   child: Icon(Icons.arrow_back),
                 ),
               ),
-              const CustText("Tao tai khoan"),
+              const StaticText("Tạo tài khoản"),
               SizedBox(height: 20),
-              const CustText("Tên hiển thị"),
+              const StaticText("Tên hiển thị"),
               SizedBox(height : 20),
-              CustTextField(hide: false, controller: widget._name),
+              CustTextField(hide: false, controller: widget._fullname),
               SizedBox(height : 20),
               const CustText("Tai khoan"),
               SizedBox(height: 20),
@@ -56,8 +59,8 @@ class SignUpScreenState extends State<SignUpScreen>{
               SizedBox(height : 20),
               CustTextField(hide: true, controller: widget._retype),
               SizedBox(height: 20),
-              CustElevatedButton(text: 'Tao tai khoan', onPressed: ()=> OnClick())
-        
+              CustElevatedButton(text: 'Tao tai khoan', onPressed: ()=> OnClick()),
+
           ],
         
         ),
@@ -66,14 +69,11 @@ class SignUpScreenState extends State<SignUpScreen>{
   }
   void OnClick(){
     print("Click Sign Up");
-    String name = widget._name.text;
+    String fullname = widget._fullname.text;
     String username = widget._username.text;
     String password = widget._password.text;
     String retype = widget._retype.text;
-    print(name);
-    print(username);
-    print(password);
-    print(retype);
+
     Navigator.pop(context);
   }
 

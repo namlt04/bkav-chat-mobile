@@ -1,5 +1,5 @@
-export 'chat_screen.dart';
-export 'error_network_screen.dart';
-export 'home_screen.dart';
-export 'sign_in_screen.dart';
-export 'sign_up_screen.dart';
+export 'chat.dart';
+export 'error.dart';
+export 'home.dart';
+export 'login.dart';
+export 'register.dart';

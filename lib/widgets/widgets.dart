@@ -9,6 +9,6 @@ export 'contact.dart';
 export 'cust_search_bar.dart';
 export 'input_field.dart';
 export 'infor_bar.dart';
-export 'message.dart';
+export 'bubble_message.dart';
 export 'message_list.dart';
 

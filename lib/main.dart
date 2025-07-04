@@ -6,10 +6,10 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/login',
     routes: {
-      '/' : (context) => HomeScreen(),
-      '/register' : (context) => SignUpScreen(),
-      '/chat' : (context) => ChatScreen(),
-      '/login' : (context) => SignInScreen()
+      '/' : (context) => Home(),
+      '/register' : (context) => Register(),
+      // '/chat' : (context) => ChatScreen(),
+      '/login' : (context) => Login()
     },
 
     debugShowCheckedModeBanner: false,
