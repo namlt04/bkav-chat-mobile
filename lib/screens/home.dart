@@ -22,7 +22,7 @@ class HomeState extends State<Home>{
     _loadFriends();
   }
   Future<void> _loadFriends() async {
-    list = await ApiServices.getFriend();
+    list = await ApiServices.instance.getFriend();
     setState(() {}); // Cập nhật lại UI sau khi có dữ liệu
   }
   @override

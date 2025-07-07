@@ -4,14 +4,14 @@ import 'package:untitled/widgets/widgets.dart';
 
 
 class Contact extends StatelessWidget{
-  // statefullWidget, ( hiển thị trạng thái online, offline )
   final String name;
-  Contact(this.name);
+  late final String friendId;
+  Contact({Key? key, required this.name, required this.friendId}) : super(key : key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print("Clicked $name");
+        Navigator.pushNamed( context,'/chat', arguments : friendId);
       },
       child: Container(
           height: 70,

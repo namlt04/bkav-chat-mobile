@@ -64,7 +64,7 @@ class LoginState extends State<Login>{
   void OnClickSignIn() async {
     String username = _usernameController.text;
     String password = _passwordController.text;
-    bool result = await ApiServices.login(username, password);
+    bool result = await ApiServices.instance.login(username, password);
     if (result){
       Navigator.pushNamed(context, '/');
     }

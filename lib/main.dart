@@ -8,7 +8,7 @@ void main() {
     routes: {
       '/' : (context) => Home(),
       '/register' : (context) => Register(),
-      // '/chat' : (context) => ChatScreen(),
+      '/chat' : (context) => Chat(),
       '/login' : (context) => Login()
     },
 

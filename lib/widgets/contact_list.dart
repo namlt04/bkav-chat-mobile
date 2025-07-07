@@ -32,7 +32,7 @@ class ContactListState extends State<ContactList>{
             itemCount: widget.list.length,
             itemBuilder: (context, index) {
               final user = widget.list[index];
-              return Contact(user.username);
+              return Contact( name: user.username, friendId : user.friendid);
             },
           ),
         ),

@@ -1,8 +1,13 @@
 
 
 import 'package:flutter/material.dart';
-
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:untitled/models/message.dart';
+import 'package:untitled/services/api_services.dart';
 class InputField extends StatefulWidget{
+  late final String friendId;
+  InputField({Key? key,required this.friendId}) : super(key : key);
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -10,7 +15,10 @@ class InputField extends StatefulWidget{
   }
 
 }
-class InputFieldState extends State<StatefulWidget>{
+class InputFieldState extends State<InputField>{
+  late List<File> files;
+  TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -26,6 +34,7 @@ class InputFieldState extends State<StatefulWidget>{
             ),
             Expanded(
               child: TextField(
+                controller: _controller,
                 maxLines: null,
                 decoration: InputDecoration(
                   hintText: "Nhập tin nhắn...",
@@ -35,15 +44,27 @@ class InputFieldState extends State<StatefulWidget>{
             ),
             IconButton(
               icon: Icon(Icons.send),
-              onPressed : (){
-                print("send");
+              onPressed : () async{
+                List<Message> messages = await ApiServices.instance.sendMessage(_controller.text.trim(), widget.friendId, files);
+                _controller.clear();
+                files.clear();
               }
             ),
             IconButton(
               icon: Icon(Icons.attach_file),
-              onPressed: (){
-                print("attach_file");
+              onPressed: () async {
+                  FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple : true);
+                  if ( result != null){
+                    List<PlatformFile> platformFiles = result.files;
+                    for( PlatformFile item in platformFiles){
+                      if ( item.path != null) {
+                        File file = File(item.path!);
+                        files.add(file);
+                      }
+                    }
+                  }
               },
+
             ),
             IconButton(
               icon: Icon(Icons.photo),
