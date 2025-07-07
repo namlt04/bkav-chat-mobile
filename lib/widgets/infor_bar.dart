@@ -21,7 +21,7 @@ class InforBarStatus extends State<InforBar>{
         children: [
           GestureDetector(
             onTap: (){
-              print("back");
+              Navigator.pop(context);
             },
             child: Icon(Icons.arrow_back),
           ),

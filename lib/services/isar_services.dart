@@ -24,10 +24,10 @@ class IsarServices{
     final dir = await getApplicationDocumentsDirectory();
     AppUrl.path = dir.path;
     // khoi tao luon các thu muc
-    final Directory pathImages = Directory('${dir}/images');
-    AppUrl.pathImages = '${dir}/images';
-    final Directory pathAvatar = Directory('${dir}/images/avatars');
-    AppUrl.pathAvatars = '${dir}/avatars';
+    final Directory pathImages = Directory('${AppUrl.path}/images');
+    AppUrl.pathImages = '${AppUrl.path}/images';
+    final Directory pathAvatar = Directory('${AppUrl.path}/images/avatars');
+    AppUrl.pathAvatars = '${AppUrl.path}/avatars';
     if ( ! await pathAvatar.exists() ) {
       // Neu khong phai tai khoan truoc do, xoa toan bo ?
       // khong xoa toan bo, ke no

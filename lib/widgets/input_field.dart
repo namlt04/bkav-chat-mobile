@@ -6,8 +6,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:untitled/models/message.dart';
 import 'package:untitled/services/api_services.dart';
 class InputField extends StatefulWidget{
+  final void Function(List<Message>) callAddMessage; 
   late final String friendId;
-  InputField({Key? key,required this.friendId}) : super(key : key);
+  InputField({Key? key,required this.friendId, required this.callAddMessage}) : super(key : key);
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -46,6 +47,7 @@ class InputFieldState extends State<InputField>{
               icon: Icon(Icons.send),
               onPressed : () async{
                 List<Message> messages = await ApiServices.instance.sendMessage(_controller.text.trim(), widget.friendId, files);
+                widget.callAddMessage(messages);
                 _controller.clear();
                 files.clear();
               }

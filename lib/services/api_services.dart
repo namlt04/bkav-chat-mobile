@@ -40,7 +40,9 @@ class ApiServices
             return false;
         }
         else {
+
             token = body['data']['token'];
+            print('$token');
             return true;
         }
       }
@@ -99,7 +101,9 @@ class ApiServices
         }
         return list;
     }
-    Future<void> getMessageAll(String friendId) async{
+    Future<List<Message>> getMessageAll(String friendId) async{
+      print('Da goi getMessage');
+      List<Message> list = [];
       Uri url = Uri.http(AppUrl.host, '/api/message/get-message', {'FriendID' : friendId});
       final http.Response response = await http.get(
        url,
@@ -109,12 +113,14 @@ class ApiServices
       if ( response.statusCode == 200){
         // ghi vao trong local database
         final Map<String, dynamic> body = jsonDecode(response.body);
-        List<Message> list = await handleMessage(body);
+        list = await handleMessage(body, friendId);
         // ghi vao trong database
         for( Message message in list) {
           IsarServices.instance.saveMessage(message);
         }
       }
+      print('goi xong get Message');
+      return list;
 
     }
     Future<void> getMessageLast(String friendId, String lastTime) async{
@@ -128,7 +134,7 @@ class ApiServices
 
       }
     }
-    Future<List<Message>> sendMessage(String content, String FriendID, List<File> files) async {
+    Future<List<Message>> sendMessage(String content, String friendId, List<File> files) async {
         // gui tin nhan, nhan response
         // tach tin nhan
         List<Message> list = [];  
@@ -137,7 +143,7 @@ class ApiServices
         final http.MultipartRequest request = http.MultipartRequest('POST', url);
 
 
-        request.fields['FriendID'] = FriendID;
+        request.fields['FriendID'] = friendId;
         request.fields['Content'] = content;
 
 
@@ -157,13 +163,14 @@ class ApiServices
         if ( response.statusCode == 200 )
           {
             final Map<String, dynamic> body = jsonDecode(response.body);
-            list = await handleMessage(body);
+            list = await handleMessage(body, friendId);
             // ghi vao trong database
             for( Message message in list) {
               IsarServices.instance.saveMessage(message);
             }     // neu dang o man hinh chat thi dua vao
 
           }
+        print(list);
 
 
         return list;
@@ -186,31 +193,36 @@ class ApiServices
             print('Anh da duoc luu tai $savePath');
         }
     }
-    Future<List<Message>> handleMessage(Map<String, dynamic> body) async {
+    Future<List<Message>> handleMessage(Map<String, dynamic> body, String friendId) async {
       List<Message> list = [];
       for (Map<String, dynamic> item in body['data']){
         if ( item['Content'] != ''){
           // neu item['content'] khac voi rong thi gan tin nhan nay vao
           Message message = Message();
           message.type = 0;
+          message.uuid = item['id'];
           message.content = item['Content'];
           // khong can tinh truoc kich thuoc
+          message.link = '';
+          message.friendId = friendId;
           message.lastTime = item['CreatedAt'];
           message.messageType = item['MessageType'];
           list.add(message);
         }
-        if ( item['Files'].size() != 0 ){
+        if ( item['Files'].length != 0 ){
             for ( Map<String, dynamic> attach in item['Files']) {
               Message message = Message();
               message.type = 2;
+              message.uuid = attach['_id'];
               message.link = attach['urlFile'];
               message.content = attach['FileName'];
+              message.friendId = friendId;
               message.lastTime = item['CreatedAt'];
               message.messageType = item['MessageType'];
               list.add(message);
             }
         }
-        if ( item['Images'].size() != 0){
+        if ( item['Images'].length != 0){
           // tao cac tin nhan
           // kiem tra xem file da duoc tai ve hay chua
           for ( Map<String, dynamic> attach in item['Images']) {
@@ -225,6 +237,8 @@ class ApiServices
 
             }
             message.content = attach['fileName'];
+            message.uuid = attach['_id'];
+            message.friendId = friendId;
             message.lastTime = item['CreatedAt'];
             message.messageType = item['MessageType'];
             list.add(message);

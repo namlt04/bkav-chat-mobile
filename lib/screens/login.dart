@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/services/isar_services.dart';
 import 'package:untitled/widgets/cust_elevated_button.dart';
 import 'package:untitled/widgets/cust_text.dart';
 import 'package:untitled/widgets/cust_text_button.dart';
@@ -67,6 +68,7 @@ class LoginState extends State<Login>{
     bool result = await ApiServices.instance.login(username, password);
     if (result){
       Navigator.pushNamed(context, '/');
+      await IsarServices.instance.db;
     }
 
   }

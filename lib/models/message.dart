@@ -10,7 +10,7 @@ class Message{
   Id id = Isar.autoIncrement; // .autoIncrement chi bao cho isar biet rang, hay tu tao id tu dong
   late String uuid ;
   late String content ;
-  late String friendId ;
+  late String friendId;
   late int type ;
   late String link ;
   late int messageType;

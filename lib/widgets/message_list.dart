@@ -5,8 +5,8 @@ import 'package:untitled/services/isar_services.dart';
 import 'package:untitled/widgets/bubble_message.dart' ;
 import 'package:untitled/services/api_services.dart';
 class MessageList extends StatefulWidget{
-  final String friendId;
-  MessageList({ Key? key,required this.friendId}) : super(key : key);
+  final List<Message> list;
+  MessageList({ Key? key,required this.list}) : super(key : key);
   @override
   State<StatefulWidget> createState() {
     return MessageListState();
@@ -18,24 +18,8 @@ class MessageListState extends State<MessageList>{
   @override
   void initState(){
     super.initState();
-    _createMessageList();
+    list = widget.list;
   }
-  Future<void> _createMessageList() async {
-    // khoi tao list
-    final message = await IsarServices.instance.getMessages(widget.friendId);
-    setState((){
-      list = message; 
-    });
-
-  }
-
-  Future<void> addMessage() async { 
-    final newMessage = await ApiServices.instance.sendMessage(widget.friendId) ;
-    setState(() { 
-        list.addAll(newMessage);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -43,7 +27,7 @@ class MessageListState extends State<MessageList>{
       itemCount: list.length,
       itemBuilder: (context, index) {
         final Message message = list[index];
-        return BubbleMessage(text: message.content, type: message.type);
+        return BubbleMessage(message: message);
       },
 
     );
