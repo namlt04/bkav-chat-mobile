@@ -5,18 +5,18 @@ class StaticText extends StatelessWidget{
   const StaticText(this.text);
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
         children: [
+          SizedBox(width: 40),
           Text(
             text,
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 16.0,
+              fontSize: 24,
               fontWeight: FontWeight.w400,
               color: const Color(0XFF000000),
             ),
           ),
-          SizedBox(height:20)
         ]
     );
   }

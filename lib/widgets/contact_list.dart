@@ -26,7 +26,13 @@ class ContactListState extends State<ContactList>{
 
     return Column(
       children: [
-        const CustText("Danh sach hop thoai", size: 20),
+        Text(
+          'Danh sach hop thoai',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 24,
+          ),
+        ),
         Expanded(
           child: ListView.builder(
             itemCount: widget.list.length,

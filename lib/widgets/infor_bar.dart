@@ -19,20 +19,21 @@ class InforBarStatus extends State<InforBar>{
       height: 100,
       child: Row(
         children: [
+          SizedBox(width : 12),
           GestureDetector(
             onTap: (){
               Navigator.pop(context);
             },
             child: Icon(Icons.arrow_back),
           ),
-          Expanded(child: Image.asset("assets/images/user.png")),
+          SizedBox(width: 24),
+          Image.asset("assets/Images/user.png"),
+          SizedBox(width : 20),
           Column(
             children: [
-              const CustText(
-                "text,",
-                size : 20
-              ),
-              Text("dang hoat dong", style: TextStyle( color: Colors.grey, fontStyle:  FontStyle.italic),)
+              SizedBox(height: 24),
+              Text("Le Thanh Nam", style: TextStyle( fontSize : 20, color: Colors.black, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
+              Text("dang hoat dong", style: TextStyle( fontSize: 16,  color: Colors.grey, fontStyle:  FontStyle.italic), textAlign: TextAlign.left)
             ],
           )
 

@@ -17,7 +17,9 @@ class Contact extends StatelessWidget{
           height: 70,
           child: Row(
               children:[
-                Image.asset('assets/images/user.png'),
+                SizedBox(width: 14,),
+                Image.asset('assets/Images/user.png'),
+                SizedBox(width: 14),
                 CustText(
                   name,
                   size: 20,

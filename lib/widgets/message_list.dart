@@ -14,19 +14,18 @@ class MessageList extends StatefulWidget{
 
 }
 class MessageListState extends State<MessageList>{
-  List<Message> list = [];
   @override
   void initState(){
     super.initState();
-    list = widget.list;
   }
   @override
   Widget build(BuildContext context) {
 
     return ListView.builder(
-      itemCount: list.length,
+      reverse: true,
+      itemCount: widget.list.length,
       itemBuilder: (context, index) {
-        final Message message = list[index];
+        final Message message = widget.list[index];
         return BubbleMessage(message: message);
       },
 

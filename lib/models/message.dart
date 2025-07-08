@@ -14,6 +14,8 @@ class Message{
   late int type ;
   late String link ;
   late int messageType;
+  late int width;
+  late int height;
   @Index() // de co the sort theo lastime
   late String lastTime;
 }

@@ -27,30 +27,40 @@ const MessageSchema = CollectionSchema(
       name: r'friendId',
       type: IsarType.string,
     ),
-    r'lastTime': PropertySchema(
+    r'height': PropertySchema(
       id: 2,
+      name: r'height',
+      type: IsarType.long,
+    ),
+    r'lastTime': PropertySchema(
+      id: 3,
       name: r'lastTime',
       type: IsarType.string,
     ),
     r'link': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'link',
       type: IsarType.string,
     ),
     r'messageType': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'messageType',
       type: IsarType.long,
     ),
     r'type': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'type',
       type: IsarType.long,
     ),
     r'uuid': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'uuid',
       type: IsarType.string,
+    ),
+    r'width': PropertySchema(
+      id: 8,
+      name: r'width',
+      type: IsarType.long,
     )
   },
   estimateSize: _messageEstimateSize,
@@ -103,11 +113,13 @@ void _messageSerialize(
 ) {
   writer.writeString(offsets[0], object.content);
   writer.writeString(offsets[1], object.friendId);
-  writer.writeString(offsets[2], object.lastTime);
-  writer.writeString(offsets[3], object.link);
-  writer.writeLong(offsets[4], object.messageType);
-  writer.writeLong(offsets[5], object.type);
-  writer.writeString(offsets[6], object.uuid);
+  writer.writeLong(offsets[2], object.height);
+  writer.writeString(offsets[3], object.lastTime);
+  writer.writeString(offsets[4], object.link);
+  writer.writeLong(offsets[5], object.messageType);
+  writer.writeLong(offsets[6], object.type);
+  writer.writeString(offsets[7], object.uuid);
+  writer.writeLong(offsets[8], object.width);
 }
 
 Message _messageDeserialize(
@@ -119,12 +131,14 @@ Message _messageDeserialize(
   final object = Message();
   object.content = reader.readString(offsets[0]);
   object.friendId = reader.readString(offsets[1]);
+  object.height = reader.readLong(offsets[2]);
   object.id = id;
-  object.lastTime = reader.readString(offsets[2]);
-  object.link = reader.readString(offsets[3]);
-  object.messageType = reader.readLong(offsets[4]);
-  object.type = reader.readLong(offsets[5]);
-  object.uuid = reader.readString(offsets[6]);
+  object.lastTime = reader.readString(offsets[3]);
+  object.link = reader.readString(offsets[4]);
+  object.messageType = reader.readLong(offsets[5]);
+  object.type = reader.readLong(offsets[6]);
+  object.uuid = reader.readString(offsets[7]);
+  object.width = reader.readLong(offsets[8]);
   return object;
 }
 
@@ -140,15 +154,19 @@ P _messageDeserializeProp<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 5:
       return (reader.readLong(offset)) as P;
     case 6:
+      return (reader.readLong(offset)) as P;
+    case 7:
       return (reader.readString(offset)) as P;
+    case 8:
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -544,6 +562,59 @@ extension MessageQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'friendId',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> heightEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'height',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> heightGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'height',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> heightLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'height',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> heightBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'height',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1094,6 +1165,59 @@ extension MessageQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> widthEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'width',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> widthGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'width',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> widthLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'width',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> widthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'width',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension MessageQueryObject
@@ -1124,6 +1248,18 @@ extension MessageQuerySortBy on QueryBuilder<Message, Message, QSortBy> {
   QueryBuilder<Message, Message, QAfterSortBy> sortByFriendIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'friendId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterSortBy> sortByHeight() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'height', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterSortBy> sortByHeightDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'height', Sort.desc);
     });
   }
 
@@ -1186,6 +1322,18 @@ extension MessageQuerySortBy on QueryBuilder<Message, Message, QSortBy> {
       return query.addSortBy(r'uuid', Sort.desc);
     });
   }
+
+  QueryBuilder<Message, Message, QAfterSortBy> sortByWidth() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'width', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterSortBy> sortByWidthDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'width', Sort.desc);
+    });
+  }
 }
 
 extension MessageQuerySortThenBy
@@ -1211,6 +1359,18 @@ extension MessageQuerySortThenBy
   QueryBuilder<Message, Message, QAfterSortBy> thenByFriendIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'friendId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterSortBy> thenByHeight() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'height', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterSortBy> thenByHeightDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'height', Sort.desc);
     });
   }
 
@@ -1285,6 +1445,18 @@ extension MessageQuerySortThenBy
       return query.addSortBy(r'uuid', Sort.desc);
     });
   }
+
+  QueryBuilder<Message, Message, QAfterSortBy> thenByWidth() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'width', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterSortBy> thenByWidthDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'width', Sort.desc);
+    });
+  }
 }
 
 extension MessageQueryWhereDistinct
@@ -1300,6 +1472,12 @@ extension MessageQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'friendId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Message, Message, QDistinct> distinctByHeight() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'height');
     });
   }
 
@@ -1335,6 +1513,12 @@ extension MessageQueryWhereDistinct
       return query.addDistinctBy(r'uuid', caseSensitive: caseSensitive);
     });
   }
+
+  QueryBuilder<Message, Message, QDistinct> distinctByWidth() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'width');
+    });
+  }
 }
 
 extension MessageQueryProperty
@@ -1354,6 +1538,12 @@ extension MessageQueryProperty
   QueryBuilder<Message, String, QQueryOperations> friendIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'friendId');
+    });
+  }
+
+  QueryBuilder<Message, int, QQueryOperations> heightProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'height');
     });
   }
 
@@ -1384,6 +1574,12 @@ extension MessageQueryProperty
   QueryBuilder<Message, String, QQueryOperations> uuidProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'uuid');
+    });
+  }
+
+  QueryBuilder<Message, int, QQueryOperations> widthProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'width');
     });
   }
 }

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:untitled/models/message.dart';
 import 'package:untitled/services/api_services.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 class InputField extends StatefulWidget{
   final void Function(List<Message>) callAddMessage; 
   late final String friendId;
@@ -17,9 +18,15 @@ class InputField extends StatefulWidget{
 
 }
 class InputFieldState extends State<InputField>{
-  late List<File> files;
+  List<File> files = [];
   TextEditingController _controller = TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -47,6 +54,7 @@ class InputFieldState extends State<InputField>{
               icon: Icon(Icons.send),
               onPressed : () async{
                 List<Message> messages = await ApiServices.instance.sendMessage(_controller.text.trim(), widget.friendId, files);
+                print('da bam gui');
                 widget.callAddMessage(messages);
                 _controller.clear();
                 files.clear();
@@ -55,6 +63,11 @@ class InputFieldState extends State<InputField>{
             IconButton(
               icon: Icon(Icons.attach_file),
               onPressed: () async {
+                  final PermissionState ps = await PhotoManager.requestPermissionExtend();
+                  if (!ps.hasAccess){
+                    PhotoManager.openSetting();
+
+                  }
                   FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple : true);
                   if ( result != null){
                     List<PlatformFile> platformFiles = result.files;
@@ -70,8 +83,20 @@ class InputFieldState extends State<InputField>{
             ),
             IconButton(
               icon: Icon(Icons.photo),
-              onPressed: (){
-                print("photo");
+              onPressed: () async {
+                  final List<AssetEntity>? result = await AssetPicker.pickAssets(
+                    context,
+                    pickerConfig: AssetPickerConfig(
+                      maxAssets: 10,
+                      requestType: RequestType.image,
+                    ),
+                  );
+                  if ( result != null)
+                  for (final asset in result) {
+                    File? file = await asset.file;
+                    if (file != null)
+                      files.add(file);
+                  }
               }
             ),
           ],

@@ -11,4 +11,5 @@ export 'input_field.dart';
 export 'infor_bar.dart';
 export 'bubble_message.dart';
 export 'message_list.dart';
+export 'static_text.dart';
 

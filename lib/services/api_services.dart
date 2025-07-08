@@ -2,7 +2,10 @@
 
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:ui';
+import 'dart:typed_data';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:untitled/services/constants.dart';
@@ -102,7 +105,6 @@ class ApiServices
         return list;
     }
     Future<List<Message>> getMessageAll(String friendId) async{
-      print('Da goi getMessage');
       List<Message> list = [];
       Uri url = Uri.http(AppUrl.host, '/api/message/get-message', {'FriendID' : friendId});
       final http.Response response = await http.get(
@@ -113,13 +115,15 @@ class ApiServices
       if ( response.statusCode == 200){
         // ghi vao trong local database
         final Map<String, dynamic> body = jsonDecode(response.body);
-        list = await handleMessage(body, friendId);
+        final data = List<Map<String, dynamic>>.from(body['data']); // chuyen no thanh List<dynamic>
+        list = await handleMessage(data, friendId);
+        // list = await handleMessage(body['data'], friendId);
         // ghi vao trong database
         for( Message message in list) {
           IsarServices.instance.saveMessage(message);
         }
       }
-      print('goi xong get Message');
+      print(' Da lay thanh cong toan bo tin nhan ');
       return list;
 
     }
@@ -138,21 +142,22 @@ class ApiServices
         // gui tin nhan, nhan response
         // tach tin nhan
         List<Message> list = [];  
-
-        Uri url = Uri.parse('http://10.0.2.2:8888/api/message/send-message');
+        Uri url = Uri.http(AppUrl.host, '/api/message/send-message');
         final http.MultipartRequest request = http.MultipartRequest('POST', url);
 
-
+        request.headers['Authorization'] = 'Bearer $token';
         request.fields['FriendID'] = friendId;
         request.fields['Content'] = content;
 
-
         for ( File file in files) {
+          final mimeType = lookupMimeType(file.path); // Ví dụ: image/jpeg
+          final mediaType = mimeType != null ? MediaType.parse(mimeType) : MediaType('application', 'octet-stream');
           request.files.add(
             await http.MultipartFile.fromPath(
                 'files',
                 file.path,
-                filename: basename(file.path)
+                filename: basename(file.path),
+                contentType: mediaType,
             )
           );
 
@@ -160,42 +165,42 @@ class ApiServices
         final http.StreamedResponse streamedResponse = await request.send();
         final response = await http.Response.fromStream(streamedResponse);
 
-        if ( response.statusCode == 200 )
+        if ( response.statusCode == 200 ) // gui thanh cong
           {
             final Map<String, dynamic> body = jsonDecode(response.body);
-            list = await handleMessage(body, friendId);
+            List<Map<String, dynamic>> tmpList = [];
+            tmpList.add(body['data']);
+            list = await handleMessage(tmpList, friendId);
             // ghi vao trong database
             for( Message message in list) {
               IsarServices.instance.saveMessage(message);
-            }     // neu dang o man hinh chat thi dua vao
+            }     // ghi vao trong database
+
 
           }
-        print(list);
 
 
         return list;
     }
     Future<void> downloadFile(String url, bool isClick) async {
       // Tu dong lay file
-      final http.Response response = await http.get(Uri.parse(url));
-
+      Uri uri = Uri.http(AppUrl.host, '/api${url}' );
+      final http.Response response = await http.get(uri);
       if ( response.statusCode == 200)
         {
-          String fileName = basename(url);
-          final List<String> list = url.split('/');
-
-          late final String savePath = '${AppUrl.path}/${url}';
-
+          final String savePath = '${AppUrl.path}${url}';
           File file = File(savePath);
           await file.writeAsBytes(response.bodyBytes);
-
           if (isClick) // Neu file duoc luu do yeu cau cua nguoi su dung:w
             print('Anh da duoc luu tai $savePath');
         }
     }
-    Future<List<Message>> handleMessage(Map<String, dynamic> body, String friendId) async {
+    Future<List<Message>> handleMessage(List<Map<String, dynamic>> body, String friendId) async {
+      // truyen vao 1 list
+
       List<Message> list = [];
-      for (Map<String, dynamic> item in body['data']){
+      // { <----- nhu nay, ma phai su dung kieu khac
+      for (Map<String, dynamic> item in body){
         if ( item['Content'] != ''){
           // neu item['content'] khac voi rong thi gan tin nhan nay vao
           Message message = Message();
@@ -204,6 +209,8 @@ class ApiServices
           message.content = item['Content'];
           // khong can tinh truoc kich thuoc
           message.link = '';
+          message.height = 0;
+          message.width = 0;
           message.friendId = friendId;
           message.lastTime = item['CreatedAt'];
           message.messageType = item['MessageType'];
@@ -216,6 +223,8 @@ class ApiServices
               message.uuid = attach['_id'];
               message.link = attach['urlFile'];
               message.content = attach['FileName'];
+              message.height = 0 ;
+              message.width = 0;
               message.friendId = friendId;
               message.lastTime = item['CreatedAt'];
               message.messageType = item['MessageType'];
@@ -229,14 +238,33 @@ class ApiServices
             Message message = Message();
             message.type = 1;
             message.link = attach['urlImage'];
-            final String tmpPath = '${AppUrl.path}/${message.link}';
+            final String tmpPath = '${AppUrl.path}${message.link}';
             final File file = File(tmpPath);
             if ( ! await file.exists() ){
                 // goi ham api tai ve
-              await downloadFile(message.link, false);
 
+              await downloadFile(message.link, false);
             }
-            message.content = attach['fileName'];
+            // Tinh kich thuoc
+            File imgSizeCalc = File(tmpPath);
+            final Uint8List bytes = await imgSizeCalc.readAsBytes();
+            //
+            // decodeImageFromList(bytes, (Image image){
+            //    message.width = image.width;
+            //    message.height = image.height;
+            // });
+            final codec = await instantiateImageCodec(bytes);
+            final frame = await codec.getNextFrame();
+            message.width = frame.image.width;
+            message.height = frame.image.height;
+            // Tinh lai kich thuoc
+            final double aspectRatio = message.width / message.height ;
+            if ( message.width >  App.width * 0.55){
+              message.width = (App.width * 0.55).toInt();
+              message.height = (message.width / aspectRatio).toInt() ;
+            }
+
+            message.content = attach['FileName'];
             message.uuid = attach['_id'];
             message.friendId = friendId;
             message.lastTime = item['CreatedAt'];

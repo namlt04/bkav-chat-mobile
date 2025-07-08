@@ -3,8 +3,7 @@ import 'package:untitled/services/api_services.dart';
 import 'package:untitled/widgets/message_list.dart';
 import 'package:untitled/widgets/widgets.dart';
 import 'package:untitled/models/message.dart';
-import 'package:untitled/services/isar_services.dart';
-
+import 'dart:collection';
 
 class Chat extends StatefulWidget{
   @override
@@ -16,11 +15,15 @@ class Chat extends StatefulWidget{
 }
 class ChatState extends State<Chat>{
   String friendId = '';
-  late List<Message> list;
+  Queue<Message> queue = Queue() ;
   void addNewMessage(List<Message> messages){
     setState((){
-      list.addAll(messages);
+      addMessage(messages);
     });
+  }
+  void addMessage(List<Message> messages){
+    for (Message message in messages)
+      queue.addFirst(message);
   }
   @override
   void didChangeDependencies(){
@@ -29,10 +32,42 @@ class ChatState extends State<Chat>{
     _initMessageList();
   }
   Future<void> _initMessageList() async {
-    final List<Message>message = await ApiServices.instance.getMessageAll(friendId);
+    final List<Message>messages = await ApiServices.instance.getMessageAll(friendId);
+    // List<Message> messages = [];
+    // Message message = Message();
+    // message.messageType = 0;
+    // message.uuid = '1232313safdaf';
+    // message.friendId = '123';
+    // message.lastTime = 'sodafsa434324';
+    // message.content = 'helo xin chaoasfaosifjaosdifjaoisfdjoaisjfosaidjfoiasdjfoiajsdfojdsafioajfoi';
+    // message.link = '';
+    // message.type = 0;
+    // messages.add(message);
+    //
+    // Message message1 = Message();
+    // message1.messageType =1;
+    // message1.uuid = '1232313safdaf';
+    // message1.friendId = '123';
+    // message1.lastTime = 'sodafsa434324';
+    // message1.content = 'helo xin chaohsadfkjsdafhkasjfdhaksjdfhsakdfdsalkfhasdklfhadslkhfakdshfakfhalkfdhakf';
+    // message1.link = '';
+    // message1.type = 0;
+    // messages.add(message1);
+    //
+    // Message message2 = Message();
+    // message2.messageType =1;
+    // message2.uuid = '1232313safdaf';
+    // message2.friendId = '123';
+    // message2.lastTime = 'sodafsa434324';
+    // message2.content = 'helo xin chao';
+    // message2.link = '';
+    // message2.type = 2;
+    // messages.add(message2);
     setState((){
-      list = message; 
+      // print(messages.length);
+      addMessage(messages);
     });
+
   }
   @override
   Widget build(BuildContext context) {
@@ -42,7 +77,7 @@ class ChatState extends State<Chat>{
         body: Column(
           children: [
             InforBar(),
-            Expanded(child: MessageList(list: list)),
+            Expanded(child: MessageList(list: queue.toList())),
             InputField(friendId: friendId, callAddMessage: addNewMessage)
           ],
         ),

@@ -31,35 +31,36 @@ class RegisterState extends State<Register>{
         
           children: [
               LogoText(),
-              SizedBox(height : 20),
-              Align(
-                alignment: Alignment.topLeft,
-                child: GestureDetector(
-                   onTap: (){
-                     Navigator.pop(context);
-                   },
-                  child: Icon(Icons.arrow_back),
-                ),
+              SizedBox(height : 10),
+
+              Row(
+                children: [
+                  SizedBox(width: 5),
+                  GestureDetector(
+                       onTap: (){
+                         Navigator.pop(context);
+                       },
+                      child: Icon(Icons.arrow_back),
+                  ),
+                  SizedBox(width : 65),
+                  StaticText(AppText.strCreateAccount),
+                ],
               ),
-              const StaticText("Tạo tài khoản"),
-              SizedBox(height: 20),
+              SizedBox(height : 10),
+              SizedBox(height: 5),
               const StaticText("Tên hiển thị"),
-              SizedBox(height : 20),
               CustTextField(hide: false, controller: widget._fullname),
-              SizedBox(height : 20),
-              const CustText("Tai khoan"),
-              SizedBox(height: 20),
+              SizedBox(height : 10),
+              StaticText(AppText.strAccount),
               CustTextField(hide: false, controller: widget._username),
-              SizedBox(height : 20),
-              const CustText("Mat khau"),
-              SizedBox(height : 20),
+              SizedBox(height : 10),
+              StaticText(AppText.strPassword),
               CustTextField(hide: true, controller: widget._password),
-              SizedBox(height: 20),
-              const CustText("Nhap lai mat khau"),
-              SizedBox(height : 20),
+              SizedBox(height: 10),
+              StaticText(AppText.strRePassword),
               CustTextField(hide: true, controller: widget._retype),
-              SizedBox(height: 20),
-              CustElevatedButton(text: 'Tao tai khoan', onPressed: ()=> OnClick()),
+              SizedBox(height: 250),
+              CustElevatedButton(text: AppText.strCreateAccount, onPressed: ()=> OnClick()),
 
           ],
         
@@ -68,7 +69,6 @@ class RegisterState extends State<Register>{
     );
   }
   void OnClick(){
-    print("Click Sign Up");
     String fullname = widget._fullname.text;
     String username = widget._username.text;
     String password = widget._password.text;

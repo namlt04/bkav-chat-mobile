@@ -13,6 +13,7 @@ class CustSearchBar extends StatefulWidget{
   
 }
 class CustSearchBarStatus extends State<CustSearchBar>{
+  TextEditingController _controller = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -22,6 +23,7 @@ class CustSearchBarStatus extends State<CustSearchBar>{
   Widget build(BuildContext context) {
 
     return SearchBar(
+      controller: _controller,
       hintText: "Tim kiem",
       elevation: WidgetStatePropertyAll(0),
       leading: const Icon(Icons.search),
@@ -29,7 +31,7 @@ class CustSearchBarStatus extends State<CustSearchBar>{
         IconButton(
             icon: Icon(Icons.close),
             onPressed : () {
-                print("Clear");
+              _controller.clear();
             }
         )
       ]

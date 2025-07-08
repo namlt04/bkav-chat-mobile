@@ -7,7 +7,7 @@ class CustText extends StatelessWidget{
   final double size;
   const CustText(
       this.text,{
-        this.textAlign = TextAlign.start,
+        this.textAlign = TextAlign.left,
         this.color = const Color(0xFF000000),
         this.size = 16.0,
         super.key

@@ -14,6 +14,7 @@ class Home extends StatefulWidget{
 
 }
 class HomeState extends State<Home>{
+
   List<User> list = [];
   @override
   void initState() {
@@ -27,14 +28,17 @@ class HomeState extends State<Home>{
   }
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    App.width = MediaQuery.of(context).size.width;
+    App.height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
         body: Column(
           children: [
+            SizedBox(height: 5,),
             LogoText(),
+            SizedBox(height: 10),
             CustSearchBar(),
-        
+            SizedBox(height : 10),
             Expanded(
                 child: ContactList(list : list)
             ),

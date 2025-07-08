@@ -31,9 +31,10 @@ class CustTextFieldState extends State<CustTextField>{
           controller: widget.controller,
           obscureText: _local_hide,
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.w400,
           ),
+
         ),
       ),
     );

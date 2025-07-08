@@ -26,12 +26,20 @@ class IsarServices{
     // khoi tao luon các thu muc
     final Directory pathImages = Directory('${AppUrl.path}/images');
     AppUrl.pathImages = '${AppUrl.path}/images';
+    final Directory pathFiles = Directory('${AppUrl.path}/files');
+    AppUrl.pathFiles = '${AppUrl.path}/files';
+
     final Directory pathAvatar = Directory('${AppUrl.path}/images/avatars');
-    AppUrl.pathAvatars = '${AppUrl.path}/avatars';
+    AppUrl.pathAvatars = '${AppUrl.path}/images/avatars';
     if ( ! await pathAvatar.exists() ) {
       // Neu khong phai tai khoan truoc do, xoa toan bo ?
       // khong xoa toan bo, ke no
       await pathAvatar.create(recursive : true);
+    }
+    if ( ! await pathFiles.exists() ) {
+      // Neu khong phai tai khoan truoc do, xoa toan bo ?
+      // khong xoa toan bo, ke no
+      await pathFiles.create(recursive : true);
     }
     return await Isar.open([MessageSchema], directory: dir.path); // open nay se tra ve 1 connection
   }
