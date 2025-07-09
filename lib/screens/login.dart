@@ -58,6 +58,7 @@ class LoginState extends State<Login>{
                     color: Colors.red,
                     fontSize: 20,
                   ),
+                  textAlign: TextAlign.center,
               )
           ),
           SizedBox(height: 250,),
@@ -92,8 +93,8 @@ class LoginState extends State<Login>{
       Navigator.pushNamed(context, '/');
     } else {
       handleError(AppText.strLoginFailed);
-      _usernameController.clear();
-      _passwordController.clear();
+      // _usernameController.clear();
+      // _passwordController.clear();
     }
 
   }

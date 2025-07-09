@@ -89,34 +89,35 @@ class RegisterState extends State<Register>{
     String password = _password.text;
     String retype = _retype.text;
     if ( password != retype) {
-      handleError(AppText.strPasswordMismatch, 3 );
+      handleError(AppText.strPasswordMismatch );
       return ;
     }
 
     if ( fullname.isEmpty || username.isEmpty || password.isEmpty || retype.isEmpty ){
-      handleError(AppText.strMissingInformation, 3);
+      handleError(AppText.strMissingInformation);
       return;
     }
     bool result = await ApiServices.instance.register(fullname, username, password);
     // result
     if (result){
-      handleError(AppText.strRegisterSuccessfully, 5);
+      handleError(AppText.strRegisterSuccessfully);
+      await Future.delayed(Duration(seconds: 5));
       Navigator.pop(context);
     } else {
-      handleError(AppText.strRegisterFailed, 3);
-      _fullname.clear();
-      _username.clear();
-      _password.clear();
-      _retype.clear();
+      handleError(AppText.strRegisterFailed);
+      // _fullname.clear();
+      // _username.clear();
+      // _password.clear();
+      // _retype.clear();
     }
 
   }
-  void handleError(String strError, int time) {
+  void handleError(String strError) {
     setState(() {
       _isVisible = true;
       _strError = strError;
     });
-    Future.delayed(Duration(seconds: time) , (){
+    Future.delayed(Duration(seconds: 3) , (){
      setState(() {
       _isVisible = false;
      });

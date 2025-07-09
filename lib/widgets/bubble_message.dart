@@ -6,7 +6,8 @@ import 'package:untitled/services/api_services.dart';
 
 class BubbleMessage extends StatefulWidget{
   final Message message;
-  BubbleMessage({required this.message});
+  final bool drawAvatar;
+  BubbleMessage({required this.message, required this.drawAvatar});
   @override
   State<StatefulWidget> createState() {
     return BubbleMessageState();
@@ -27,10 +28,14 @@ class BubbleMessageState extends State<BubbleMessage>{
             mainAxisAlignment: widget.message.messageType == 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
             children: [
               if (widget.message.messageType == 0 )
-                Padding(
-                  padding: const EdgeInsets.only(left : 8),
-                child : Image.asset('assets/Images/user.png', width: 30, height: 30 ),
-               ),
+               //  Padding(
+               //    padding: widget.drawAvatar ?  EdgeInsets.only(left: 8) : EdgeInsets.only(left: 38),
+               //  child : widget.drawAvatar ?  Image.asset('assets/Images/user.png', width: 30, height: 30 ) : SizedBox.shrink() ,
+               // ),
+              SizedBox(
+               width : 38,
+               child : widget.drawAvatar ? Image.asset('assets/Images/user.png', width: 30, height: 30) : SizedBox.shrink(),
+              ),
               Padding (
                   padding: const EdgeInsets.only(
                     left: 12,
@@ -56,7 +61,8 @@ class BubbleMessageState extends State<BubbleMessage>{
 
 
     )),
-    ],
+
+            ],
     );
     }
   Widget buildWidgetContent(){

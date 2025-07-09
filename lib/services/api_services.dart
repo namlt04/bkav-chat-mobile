@@ -92,7 +92,12 @@ class ApiServices
         if( response.statusCode == 200){
           final Map<String, dynamic> body = jsonDecode(response.body);
           for (dynamic friend in body['data']){
-            final User user =  User(content : friend['Content'],username :  friend['Username'],friendid :  friend['FriendID']);
+            String? avatarLink;
+            if ( friend.containsKey('Avatar')) {
+              await downloadFile(friend['Avatar'], false);
+              avatarLink = friend['Avatar'];
+            }
+            final User user =  User(content : friend['Content'],username :  friend['Username'],friendid :  friend['FriendID'], avatar: avatarLink);
             list.add(user);
           }
         }

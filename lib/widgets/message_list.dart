@@ -22,11 +22,22 @@ class MessageListState extends State<MessageList>{
   Widget build(BuildContext context) {
 
     return ListView.builder(
-      reverse: true,
+      reverse: true, // day la reveser true
       itemCount: widget.list.length,
       itemBuilder: (context, index) {
         final Message message = widget.list[index];
-        return BubbleMessage(message: message);
+        bool _drawAvatar = false;
+        // if ( index + 1 < widget.list.length ) {
+        //   Message messageNext = widget.list[index + 1];
+        //   if ( messageNext.messageType == 0)
+        //     _drawAvatar = true;
+        // }
+        if ( index - 1 >= 0 ){
+          Message messageNext = widget.list[index - 1];
+          if ( messageNext.messageType == 1)
+            _drawAvatar = true;
+        }
+        return BubbleMessage(message: message,drawAvatar:  _drawAvatar);
       },
 
     );

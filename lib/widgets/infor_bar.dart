@@ -30,10 +30,11 @@ class InforBarStatus extends State<InforBar>{
           Image.asset("assets/Images/user.png"),
           SizedBox(width : 20),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 24),
-              Text("Le Thanh Nam", style: TextStyle( fontSize : 20, color: Colors.black, fontWeight: FontWeight.bold), textAlign: TextAlign.left),
-              Text("dang hoat dong", style: TextStyle( fontSize: 16,  color: Colors.grey, fontStyle:  FontStyle.italic), textAlign: TextAlign.left)
+              Text("Le Thanh Nam", style: TextStyle( fontSize : 20, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text("Dang hoat dong", style: TextStyle( fontSize: 16,  color: Colors.grey, fontStyle:  FontStyle.italic))
             ],
           )
 
