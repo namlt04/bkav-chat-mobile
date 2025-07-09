@@ -22,9 +22,10 @@ class AppText {
   static const String strAccountEmptyError = 'Tên đăng nhập không được để trống';
   static const String strPasswordEmptyError = 'Mật khẩu không được để trống';
   static const String strLoginFailed = 'Tên đăng nhập hoặc mật khẩu không chính xác';
-  static const String strMissingInformation = 'Bạn điền thiếu thông tin ';
+  static const String strMissingInformation = 'Bạn điền thiếu thông tin';
   static const String strPasswordMismatch = 'Mật khẩu không khớp';
   static const String strRegisterFailed = 'Đăng ký không thành công';
+  static const String strRegisterSuccessfully = 'Đăng ký thành công\nTrở lại màn hình đăng nhập sau 5s';
 }
 
 class AppUrl {

@@ -63,26 +63,20 @@ class ApiServices
                 "Content-Type" : "application/json"
             },
             body : jsonEncode({
-                "Fullname" : fullname,
+                "FullName" : fullname,
                 "Username" : username,
                 "Password" : username,
 
             })
-
-
         );
 
         if ( response.statusCode == 200){
             final Map<String, dynamic> body = jsonDecode(response.body);
             if ( body['status'] == 1){
                 return true;
-
-            } return false;
-
-
-        } else return false;
-        return false ;
-
+            }
+        }
+        return false;
 
     }
     Future<List<User>> getFriend() async{

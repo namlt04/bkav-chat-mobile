@@ -21,7 +21,7 @@ class CustElevatedButton extends StatelessWidget{
           style: TextStyle(
               color : Colors.white,
               fontWeight: FontWeight.w400,
-              fontSize : 16
+              fontSize : 20
           ),
         )
     );

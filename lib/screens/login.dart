@@ -49,16 +49,18 @@ class LoginState extends State<Login>{
           StaticText(AppText.strPassword),
           SizedBox(height: 20),
           CustTextField(hide: true,controller: _passwordController),
+          SizedBox(height: 100),
           Visibility(
               visible: _isVisible,
               child: Text(
                   strError,
                   style: TextStyle(
                     color: Colors.red,
+                    fontSize: 20,
                   ),
               )
           ),
-          SizedBox(height: 350,),
+          SizedBox(height: 250,),
           CustElevatedButton(
               text: AppText.strLogin,
               onPressed: ()=> OnClickSignIn()
@@ -74,26 +76,40 @@ class LoginState extends State<Login>{
   void OnClickSignIn() async {
     String username = _usernameController.text;
     String password = _passwordController.text;
+
+    if (username.isEmpty) {
+      handleError(AppText.strAccountEmptyError);
+      return;
+    }
+
+    if (password.isEmpty){
+      handleError(AppText.strPasswordEmptyError);
+      return ;
+    }
     bool result = await ApiServices.instance.login(username, password);
     if (result){
       await IsarServices.instance.db;
       Navigator.pushNamed(context, '/');
     } else {
-      setState(() {
-          strError = AppText.strPasswordMismatch;
-          _isVisible = true;
-          Future.delayed(Duration(seconds: 3), (){
-            setState(() {
-              _isVisible = false;
-            });
-          });
-      });
+      handleError(AppText.strLoginFailed);
+      _usernameController.clear();
+      _passwordController.clear();
     }
 
   }
   void OnClickSignUp(){
-    print("Click Sign up button");
     Navigator.pushNamed(context, '/register');
+  }
+  void handleError(String noti){
+    setState(() {
+      strError = noti;
+      _isVisible = true;
+    });
+    Future.delayed(Duration(seconds: 3), (){
+        setState(() {
+          _isVisible = false;
+        });
+    });
   }
   
 }

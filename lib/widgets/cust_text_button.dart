@@ -11,6 +11,9 @@ class CustTextButton extends StatelessWidget{
       onPressed: onPressed,
       child: Text(
           text,
+          style: TextStyle(
+           fontSize: 20,
+          ),
       )
     );
   }
