@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:untitled/widgets/widgets.dart';
 import 'package:untitled/services/services.dart';
+import 'package:untitled/models/user.dart';
 
 class ContactList extends StatefulWidget{
   final List<User> list;
@@ -27,7 +28,7 @@ class ContactListState extends State<ContactList>{
     return Column(
       children: [
         Text(
-          'Danh sach hop thoai',
+          'Danh sách hộp thoại',
           style: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 24,
@@ -38,7 +39,7 @@ class ContactListState extends State<ContactList>{
             itemCount: widget.list.length,
             itemBuilder: (context, index) {
               final user = widget.list[index];
-              return Contact( name: user.username, friendId : user.friendid);
+              return Contact(user : user);
             },
           ),
         ),

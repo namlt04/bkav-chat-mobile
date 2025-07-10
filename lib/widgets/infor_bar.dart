@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:untitled/widgets/widgets.dart';
-
+import 'package:untitled/models/user.dart';
 class InforBar extends StatefulWidget{
+  final User user;
+  InforBar({Key? key, required this.user});
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -33,8 +35,17 @@ class InforBarStatus extends State<InforBar>{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 24),
-              Text("Le Thanh Nam", style: TextStyle( fontSize : 20, color: Colors.black, fontWeight: FontWeight.bold)),
-              Text("Dang hoat dong", style: TextStyle( fontSize: 16,  color: Colors.grey, fontStyle:  FontStyle.italic))
+              Text(
+                  widget.user.Fullname ?? widget.user.username,
+                  style: TextStyle( fontSize : 20, color: Colors.black, fontWeight: FontWeight.bold)),
+              Text(
+                  widget.user.isOnline ? 'Online' : 'Offline'
+                  ,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                      fontStyle:  FontStyle.italic)
+              )
             ],
           )
 

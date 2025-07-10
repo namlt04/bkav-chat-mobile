@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/services/api_services.dart';
+import 'package:untitled/services/isar_services.dart';
 import 'package:untitled/widgets/message_list.dart';
 import 'package:untitled/widgets/widgets.dart';
 import 'package:untitled/models/message.dart';
+import 'package:untitled/models/user.dart';
 import 'dart:collection';
 
 class Chat extends StatefulWidget{
@@ -14,7 +16,7 @@ class Chat extends StatefulWidget{
 
 }
 class ChatState extends State<Chat>{
-  String friendId = '';
+  User user = User(username: '', friendId: '', content: '', isOnline: true, ) ;
   Queue<Message> queue = Queue() ;
   void addNewMessage(List<Message> messages){
     setState((){
@@ -28,11 +30,13 @@ class ChatState extends State<Chat>{
   @override
   void didChangeDependencies(){
     super.didChangeDependencies();
-    friendId = ModalRoute.of(context)!.settings.arguments as String;
+    user = ModalRoute.of(context)!.settings.arguments as User;
     _initMessageList();
   }
   Future<void> _initMessageList() async {
-    final List<Message>messages = await ApiServices.instance.getMessageAll(friendId);
+    // final List<Message>messages = await ApiServices.instance.getMessageAll(friendId);
+
+    final List<Message>messages = await IsarServices.instance.getMessages(user.friendId);
     // List<Message> messages = [];
     // Message message = Message();
     // message.messageType = 0;
@@ -76,9 +80,9 @@ class ChatState extends State<Chat>{
       child: Scaffold(
         body: Column(
           children: [
-            InforBar(),
+            InforBar(user : user),
             Expanded(child: MessageList(list: queue.toList())),
-            InputField(friendId: friendId, callAddMessage: addNewMessage)
+            InputField(friendId: user.friendId, callAddMessage: addNewMessage)
           ],
         ),
       ),

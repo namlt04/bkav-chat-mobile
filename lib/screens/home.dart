@@ -4,6 +4,7 @@ import 'package:untitled/widgets/contact_list.dart';
 import 'package:untitled/widgets/cust_search_bar.dart';
 import 'package:untitled/widgets/logo_text.dart';
 import 'package:untitled/services/services.dart';
+import 'package:untitled/models/user.dart';
 class Home extends StatefulWidget{
   Home({Key? key});
   @override
