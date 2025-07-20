@@ -34,7 +34,7 @@ class InputFieldState extends State<InputField>{
       child: Column(
         children: [
           Container(
-            height: 100,
+            height: 60,
             child: Row(
               children: [
                 IconButton(
