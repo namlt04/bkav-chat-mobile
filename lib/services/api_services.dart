@@ -10,9 +10,10 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:untitled/services/constants.dart';
 import 'package:untitled/services/isar_services.dart';
-import 'entities.dart';
+import 'package:untitled/models/user.dart';
 import 'package:path/path.dart';
 import 'package:untitled/models/message.dart';
+import 'package:untitled/models/synced_friend.dart';
 class ApiServices
 {
     static final ApiServices instance = ApiServices._internal();
@@ -77,7 +78,6 @@ class ApiServices
             }
         }
         return false;
-
     }
     Future<List<User>> getFriend() async{
         Uri url = Uri.http(AppUrl. host, '/api/message/list-friend');
@@ -94,16 +94,48 @@ class ApiServices
           for (dynamic friend in body['data']){
             String? avatarLink;
             if ( friend.containsKey('Avatar')) {
-              await downloadFile(friend['Avatar'], false);
+              await autoGetResource(friend['Avatar']);
               avatarLink = friend['Avatar'];
             }
-            final User user =  User(content : friend['Content'],username :  friend['Username'],friendid :  friend['FriendID'], avatar: avatarLink);
+            String? fullname;
+            if ( friend.containsKey('FullName')) {
+              await autoGetResource(friend['FullName']);
+              fullname = friend['FullName'];
+            }
+            String content = "";
+              if (friend['Content'] == "") {
+                if (friend['Files']!= null )
+                  content += '${friend['Files'].length} tap tin';
+                if (friend['Images'] != null )
+                  if (content == "")
+                      content += '${friend['Images'].length} hinh anh';
+                  else
+                    content += ' va ${friend['Images'].length} hinh anh';
+                if (content == "")
+                  content = 'Khong co tin nhan moi';
+              }
+              else content = friend['Content'];
+              print(content);
+            final User user =  User(content : content,username :  friend['Username'],friendId :  friend['FriendID'],isOnline : friend['isOnline'],   avatar: avatarLink, Fullname: fullname);
             list.add(user);
           }
         }
         return list;
     }
-    Future<List<Message>> getMessageAll(String friendId) async{
+    Future<void> getMessageAll(String friendId) async{
+      // Kiem tra no da ton tai trong databse hay chua
+      // Co : tai xuong toan bo,
+      // Chua : dong bo no voi databse bang GetMessageLast
+
+      final SyncedFriend? result = await IsarServices.instance.checkSynced(friendId);
+      if ( result != null){
+
+        final DateTime lastTime = result.syncedAt;
+        final String strLastTime = lastTime.toIso8601String();
+        //
+        await getMessageLast(friendId, strLastTime);
+        return;
+      }
       List<Message> list = [];
       Uri url = Uri.http(AppUrl.host, '/api/message/get-message', {'FriendID' : friendId});
       final http.Response response = await http.get(
@@ -122,25 +154,47 @@ class ApiServices
           IsarServices.instance.saveMessage(message);
         }
       }
-      print(' Da lay thanh cong toan bo tin nhan ');
-      return list;
-
+      if ( list.isNotEmpty) {
+          Message message = list.last;
+          updateSynced(friendId, message);
+      }
     }
+
     Future<void> getMessageLast(String friendId, String lastTime) async{
       Uri url = Uri.http(AppUrl.host, '/api/message/get-message', {'FriendID' : friendId, 'LastTime' : lastTime});
+      // Truy van lasttime lan cuoi
       final http.Response response = await http.get(
           url,
           headers : { 'Authorization' : 'Bearer $ApiServices.token' }
       );
 
       if ( response.statusCode == 200){
-
+        // Tan dung lai code phan getMessageAll
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        final data = List<Map<String, dynamic>>.from(body['data']); // chuyen no thanh List<dynamic>
+        List<Message> list = await handleMessage(data, friendId);
+        // list = await handleMessage(body['data'], friendId);
+        // ghi vao trong database
+        for( Message message in list) {
+          IsarServices.instance.saveMessage(message);
+        }
+        if ( list.isNotEmpty) {
+          Message message = list.last;
+          updateSynced(friendId, message);
+        }
       }
+    }
+    void updateSynced(String friendId, Message message) async{
+      SyncedFriend sf = SyncedFriend();
+      sf.friendId = friendId;
+      sf.syncedAt = message.createAt;
+     await IsarServices.instance.updateSynced(sf);
     }
     Future<List<Message>> sendMessage(String content, String friendId, List<File> files) async {
         // gui tin nhan, nhan response
-        // tach tin nhan
-        List<Message> list = [];  
+        // response duoc ghi vao local database
+        // luu response truc tiep duoc them vao list dang hien thi
+        List<Message> list = [];
         Uri url = Uri.http(AppUrl.host, '/api/message/send-message');
         final http.MultipartRequest request = http.MultipartRequest('POST', url);
 
@@ -173,15 +227,11 @@ class ApiServices
             // ghi vao trong database
             for( Message message in list) {
               IsarServices.instance.saveMessage(message);
-            }     // ghi vao trong database
-
-
+            }
           }
-
-
         return list;
     }
-    Future<void> downloadFile(String url, bool isClick) async {
+    Future<void> autoGetResource(String url) async {
       // Tu dong lay file
       Uri uri = Uri.http(AppUrl.host, '/api${url}' );
       final http.Response response = await http.get(uri);
@@ -190,9 +240,21 @@ class ApiServices
           final String savePath = '${AppUrl.path}${url}';
           File file = File(savePath);
           await file.writeAsBytes(response.bodyBytes);
-          if (isClick) // Neu file duoc luu do yeu cau cua nguoi su dung:w
-            print('Anh da duoc luu tai $savePath');
         }
+    }
+    Future<void> getResource(String url) async {
+      // Tu dong lay file
+      Uri uri = Uri.http(AppUrl.host, '/api${url}' );
+      final http.Response response = await http.get(uri);
+
+      if ( response.statusCode == 200)
+      {
+          String filename = basename(url);
+            String downloadPath = '/storage/emulated/0/Download';
+            File file = File('${downloadPath}/${filename}');
+            await file.writeAsBytes(response.bodyBytes);
+          print('File da duoc luu tai /Downloads');
+      }
     }
     Future<List<Message>> handleMessage(List<Map<String, dynamic>> body, String friendId) async {
       // truyen vao 1 list
@@ -211,7 +273,8 @@ class ApiServices
           message.height = 0;
           message.width = 0;
           message.friendId = friendId;
-          message.lastTime = item['CreatedAt'];
+          message.createAt = DateTime.parse(item['CreatedAt']);
+          message.saveTime = DateTime.now();
           message.messageType = item['MessageType'];
           list.add(message);
         }
@@ -225,7 +288,8 @@ class ApiServices
               message.height = 0 ;
               message.width = 0;
               message.friendId = friendId;
-              message.lastTime = item['CreatedAt'];
+              message.createAt =DateTime.parse(item['CreatedAt']);
+              message.saveTime = DateTime.now();
               message.messageType = item['MessageType'];
               list.add(message);
             }
@@ -242,7 +306,7 @@ class ApiServices
             if ( ! await file.exists() ){
                 // goi ham api tai ve
 
-              await downloadFile(message.link, false);
+              await autoGetResource(message.link);
             }
             // Tinh kich thuoc
             File imgSizeCalc = File(tmpPath);
@@ -266,7 +330,8 @@ class ApiServices
             message.content = attach['FileName'];
             message.uuid = attach['_id'];
             message.friendId = friendId;
-            message.lastTime = item['CreatedAt'];
+            message.createAt = DateTime.parse(item['CreatedAt']);
+            message.saveTime = DateTime.now();
             message.messageType = item['MessageType'];
             list.add(message);
           }

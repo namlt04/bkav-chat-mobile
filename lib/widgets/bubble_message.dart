@@ -3,7 +3,6 @@ import 'package:untitled/models/message.dart';
 import 'dart:io';
 import 'package:untitled/services/constants.dart';
 import 'package:untitled/services/api_services.dart';
-
 class BubbleMessage extends StatefulWidget{
   final Message message;
   final bool drawAvatar;
@@ -88,7 +87,7 @@ class BubbleMessageState extends State<BubbleMessage>{
       case 2:
         return GestureDetector(
           onTap : () async {
-            await ApiServices.instance.downloadFile( widget.message.link, true);
+            await ApiServices.instance.getResource(widget.message.link);
           },
           child: ConstrainedBox(
             constraints: BoxConstraints(

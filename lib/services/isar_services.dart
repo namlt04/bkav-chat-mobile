@@ -2,8 +2,9 @@ import 'package:isar/isar.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:untitled/models/message.dart';
+import 'package:untitled/services/api_services.dart';
 import 'package:untitled/services/constants.dart';
-
+import 'package:untitled/models/synced_friend.dart';
 
 
 // Trien khai Singleton tron dart
@@ -58,8 +59,22 @@ class IsarServices{
     return await isar.messages
         .filter()
         .friendIdEqualTo(FriendID)
-        .sortByLastTime()
+        .sortBySaveTime()
         .findAll();
   }
+  Future<SyncedFriend?> checkSynced(String friendId) async {
+    final isar = await db;
+    return await isar.syncedFriends
+        .filter()
+        .friendIdEqualTo(friendId)
+        .findFirst();
+  }
+
   // Truy van list database
+  Future<void> updateSynced(SyncedFriend sf) async {
+    final isar = await db;
+    await isar.writeTxn( () async  {
+      await isar.syncedFriends.put(sf);
+    });
+  }
 }
