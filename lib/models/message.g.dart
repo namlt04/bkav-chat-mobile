@@ -52,23 +52,18 @@ const MessageSchema = CollectionSchema(
       name: r'saveTime',
       type: IsarType.dateTime,
     ),
-    r'timestamp': PropertySchema(
-      id: 7,
-      name: r'timestamp',
-      type: IsarType.long,
-    ),
     r'type': PropertySchema(
-      id: 8,
+      id: 7,
       name: r'type',
       type: IsarType.long,
     ),
     r'uuid': PropertySchema(
-      id: 9,
+      id: 8,
       name: r'uuid',
       type: IsarType.string,
     ),
     r'width': PropertySchema(
-      id: 10,
+      id: 9,
       name: r'width',
       type: IsarType.long,
     )
@@ -127,10 +122,9 @@ void _messageSerialize(
   writer.writeString(offsets[4], object.link);
   writer.writeLong(offsets[5], object.messageType);
   writer.writeDateTime(offsets[6], object.saveTime);
-  writer.writeLong(offsets[7], object.timestamp);
-  writer.writeLong(offsets[8], object.type);
-  writer.writeString(offsets[9], object.uuid);
-  writer.writeLong(offsets[10], object.width);
+  writer.writeLong(offsets[7], object.type);
+  writer.writeString(offsets[8], object.uuid);
+  writer.writeLong(offsets[9], object.width);
 }
 
 Message _messageDeserialize(
@@ -148,10 +142,9 @@ Message _messageDeserialize(
   object.link = reader.readString(offsets[4]);
   object.messageType = reader.readLong(offsets[5]);
   object.saveTime = reader.readDateTime(offsets[6]);
-  object.timestamp = reader.readLong(offsets[7]);
-  object.type = reader.readLong(offsets[8]);
-  object.uuid = reader.readString(offsets[9]);
-  object.width = reader.readLong(offsets[10]);
+  object.type = reader.readLong(offsets[7]);
+  object.uuid = reader.readString(offsets[8]);
+  object.width = reader.readLong(offsets[9]);
   return object;
 }
 
@@ -179,10 +172,8 @@ P _messageDeserializeProp<P>(
     case 7:
       return (reader.readLong(offset)) as P;
     case 8:
-      return (reader.readLong(offset)) as P;
-    case 9:
       return (reader.readString(offset)) as P;
-    case 10:
+    case 9:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1030,59 +1021,6 @@ extension MessageQueryFilter
     });
   }
 
-  QueryBuilder<Message, Message, QAfterFilterCondition> timestampEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'timestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> timestampGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'timestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> timestampLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'timestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterFilterCondition> timestampBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'timestamp',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<Message, Message, QAfterFilterCondition> typeEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1410,18 +1348,6 @@ extension MessageQuerySortBy on QueryBuilder<Message, Message, QSortBy> {
     });
   }
 
-  QueryBuilder<Message, Message, QAfterSortBy> sortByTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timestamp', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> sortByTimestampDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timestamp', Sort.desc);
-    });
-  }
-
   QueryBuilder<Message, Message, QAfterSortBy> sortByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.asc);
@@ -1557,18 +1483,6 @@ extension MessageQuerySortThenBy
     });
   }
 
-  QueryBuilder<Message, Message, QAfterSortBy> thenByTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timestamp', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Message, Message, QAfterSortBy> thenByTimestampDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timestamp', Sort.desc);
-    });
-  }
-
   QueryBuilder<Message, Message, QAfterSortBy> thenByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.asc);
@@ -1653,12 +1567,6 @@ extension MessageQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Message, Message, QDistinct> distinctByTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'timestamp');
-    });
-  }
-
   QueryBuilder<Message, Message, QDistinct> distinctByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'type');
@@ -1726,12 +1634,6 @@ extension MessageQueryProperty
   QueryBuilder<Message, DateTime, QQueryOperations> saveTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'saveTime');
-    });
-  }
-
-  QueryBuilder<Message, int, QQueryOperations> timestampProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'timestamp');
     });
   }
 

@@ -148,7 +148,7 @@ class ApiServices
         final Map<String, dynamic> body = jsonDecode(response.body);
         final data = List<Map<String, dynamic>>.from(body['data']); // chuyen no thanh List<dynamic>
         list = await handleMessage(data, friendId);
-        // list = await handleMessage(body['data'], friendId);
+        
         // ghi vao trong database
         for( Message message in list) {
           IsarServices.instance.saveMessage(message);

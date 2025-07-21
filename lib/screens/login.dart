@@ -89,6 +89,7 @@ class LoginState extends State<Login>{
     }
     bool result = await ApiServices.instance.login(username, password);
     if (result){
+       IsarServices.init(username);
       await IsarServices.instance.db;
       Navigator.pushNamed(context, '/');
     } else {

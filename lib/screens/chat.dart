@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/services/api_services.dart';
 import 'package:untitled/services/isar_services.dart';
+import 'package:untitled/widgets/file_preview.dart';
 import 'package:untitled/widgets/message_list.dart';
 import 'package:untitled/widgets/widgets.dart';
 import 'package:untitled/models/message.dart';
 import 'package:untitled/models/user.dart';
 import 'dart:collection';
+import 'dart:io';
 
 class Chat extends StatefulWidget{
+  final GlobalKey<InputFieldState> inputKey = GlobalKey();
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -17,12 +20,17 @@ class Chat extends StatefulWidget{
 }
 class ChatState extends State<Chat>{
   User user = User(username: '', friendId: '', content: '', isOnline: true, ) ;
+  bool isVisible = false ;
   Queue<Message> queue = Queue() ;
+
+  // void A
   void addNewMessage(List<Message> messages){
     setState((){
       addMessage(messages);
     });
   }
+
+
   void addMessage(List<Message> messages){
     for (Message message in messages)
       queue.addFirst(message);
@@ -34,9 +42,9 @@ class ChatState extends State<Chat>{
     _initMessageList();
   }
   Future<void> _initMessageList() async {
-    // final List<Message>messages = await ApiServices.instance.getMessageAll(friendId);
+    await ApiServices.instance.getMessageAll(user.friendId);
 
-    final List<Message>messages = await IsarServices.instance.getMessages(user.friendId);
+    final List<Message> messages = await IsarServices.instance.getMessages(user.friendId);
     // List<Message> messages = [];
     // Message message = Message();
     // message.messageType = 0;
@@ -73,6 +81,7 @@ class ChatState extends State<Chat>{
     });
 
   }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -82,7 +91,8 @@ class ChatState extends State<Chat>{
           children: [
             InforBar(user : user),
             Expanded(child: MessageList(list: queue.toList())),
-            InputField(friendId: user.friendId, callAddMessage: addNewMessage)
+
+            InputField( friendId: user.friendId, callAddMessage: addNewMessage),
           ],
         ),
       ),

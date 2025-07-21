@@ -15,7 +15,6 @@ class Message{
   late String link ;
   late int messageType;
   late int width;
-  late int timestamp;
   late int height;
   @Index()
   late DateTime saveTime;

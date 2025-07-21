@@ -32,13 +32,16 @@ class MessageListState extends State<MessageList>{
         //   if ( messageNext.messageType == 0)
         //     _drawAvatar = true;
         // }
-        if ( index - 1 >= 0 ){
-          Message messageNext = widget.list[index - 1];
-          if ( messageNext.messageType == 1)
+        if (index == 0 || index - 1 >= 0) {
+          if (index - 1 >= 0) {
+            Message messageNext = widget.list[index - 1];
+            if (messageNext.messageType == 1)
+              _drawAvatar = true;
+          } else if (message.messageType == 0)
             _drawAvatar = true;
+          return BubbleMessage(message: message, drawAvatar: _drawAvatar);
         }
-        return BubbleMessage(message: message,drawAvatar:  _drawAvatar);
-      },
+      }
 
     );
   }

@@ -27,7 +27,7 @@ class ErrorNetworkScreen extends StatelessWidget{
               Padding(
                   padding: EdgeInsets.only(left : 34, right: 34),
                   child : CustText(
-                    "Hehehehehe",
+                    " Lỗi kết nối, vui lòng kiểm tra mạng ",
                     textAlign : TextAlign.center,
                   ),
                 ),

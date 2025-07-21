@@ -10,12 +10,18 @@ import 'package:untitled/models/synced_friend.dart';
 // Trien khai Singleton tron dart
 
 class IsarServices{
-  static final IsarServices instance = IsarServices._internal();
+  static late IsarServices instance;
 
+  static void init(String username) {
+    instance = IsarServices._internal(username);
+  }
   late Future<Isar> db;
   // Future<Isar> : chua co ngay lap tuc, ma se co trong tuong lai
   // Isar chinh la 1 connection toi database
-  IsarServices._internal(){ // Ham khoi tao, khong duoc phep co async
+
+  String username;
+  IsarServices._internal(this.username){
+    // Ham khoi tao, khong duoc phep co async
     // ngan chan nguoi ngoai goi IsarServices, tao nhieu ket noi voi database
     db = _initIsar();
   }
@@ -25,13 +31,13 @@ class IsarServices{
     final dir = await getApplicationDocumentsDirectory();
     AppUrl.path = dir.path;
     // khoi tao luon các thu muc
-    final Directory pathImages = Directory('${AppUrl.path}/images');
-    AppUrl.pathImages = '${AppUrl.path}/images';
-    final Directory pathFiles = Directory('${AppUrl.path}/files');
-    AppUrl.pathFiles = '${AppUrl.path}/files';
+    final Directory pathImages = Directory('${AppUrl.path}/${username}/images');
+    AppUrl.pathImages = '${AppUrl.path}/${username}/images';
+    final Directory pathFiles = Directory('${AppUrl.path}/${username}/files');
+    AppUrl.pathFiles = '${AppUrl.path}/${username}/files';
 
-    final Directory pathAvatar = Directory('${AppUrl.path}/images/avatars');
-    AppUrl.pathAvatars = '${AppUrl.path}/images/avatars';
+    final Directory pathAvatar = Directory('${AppUrl.path}/${username}/images/avatars');
+    AppUrl.pathAvatars = '${AppUrl.path}/${username}/images/avatars';
     if ( ! await pathAvatar.exists() ) {
       // Neu khong phai tai khoan truoc do, xoa toan bo ?
       // khong xoa toan bo, ke no
@@ -42,7 +48,7 @@ class IsarServices{
       // khong xoa toan bo, ke no
       await pathFiles.create(recursive : true);
     }
-    return await Isar.open([MessageSchema], directory: dir.path); // open nay se tra ve 1 connection
+    return await Isar.open([MessageSchema, SyncedFriendSchema], directory: '${dir.path}/${username}'); // open nay se tra ve 1 connection
   }
 
   Future<void> saveMessage(Message msg) async {
