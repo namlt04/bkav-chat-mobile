@@ -44,6 +44,7 @@ dependencies:
   photo_manager: ^3.7.1
   emoji_picker_flutter: ^4.3.0
 dev_dependencies:
+  flutter_launcher_icons : any
   flutter_test:
     sdk: flutter
 
@@ -56,7 +57,10 @@ dev_dependencies:
   connectivity_plus: ^6.1.4
   isar_generator: any
   build_runner: any
-
+flutter_icons:
+  android : true
+  ios : true
+  image_path : 'assets/Images/bkav.png'
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -74,6 +78,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/Images/user.png
+    - assets/Images/bkav.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
