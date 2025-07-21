@@ -65,7 +65,7 @@ class ApiServices
             body : jsonEncode({
                 "FullName" : fullname,
                 "Username" : username,
-                "Password" : username,
+                "Password" : password,
 
             })
         );

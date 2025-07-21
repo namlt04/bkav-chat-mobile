@@ -60,7 +60,6 @@ class InputFieldState extends State<InputField>{
                   icon: Icon(Icons.send),
                   onPressed : () async{
                     List<Message> messages = await ApiServices.instance.sendMessage(_controller.text.trim(), widget.friendId, files);
-                    print('da bam gui');
                     widget.callAddMessage(messages);
                     _controller.clear();
                     files.clear();
