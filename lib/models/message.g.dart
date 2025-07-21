@@ -37,33 +37,38 @@ const MessageSchema = CollectionSchema(
       name: r'height',
       type: IsarType.long,
     ),
-    r'link': PropertySchema(
+    r'isSend': PropertySchema(
       id: 4,
+      name: r'isSend',
+      type: IsarType.long,
+    ),
+    r'link': PropertySchema(
+      id: 5,
       name: r'link',
       type: IsarType.string,
     ),
     r'messageType': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'messageType',
       type: IsarType.long,
     ),
     r'saveTime': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'saveTime',
       type: IsarType.dateTime,
     ),
     r'type': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'type',
       type: IsarType.long,
     ),
     r'uuid': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'uuid',
       type: IsarType.string,
     ),
     r'width': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'width',
       type: IsarType.long,
     )
@@ -119,12 +124,13 @@ void _messageSerialize(
   writer.writeDateTime(offsets[1], object.createAt);
   writer.writeString(offsets[2], object.friendId);
   writer.writeLong(offsets[3], object.height);
-  writer.writeString(offsets[4], object.link);
-  writer.writeLong(offsets[5], object.messageType);
-  writer.writeDateTime(offsets[6], object.saveTime);
-  writer.writeLong(offsets[7], object.type);
-  writer.writeString(offsets[8], object.uuid);
-  writer.writeLong(offsets[9], object.width);
+  writer.writeLong(offsets[4], object.isSend);
+  writer.writeString(offsets[5], object.link);
+  writer.writeLong(offsets[6], object.messageType);
+  writer.writeDateTime(offsets[7], object.saveTime);
+  writer.writeLong(offsets[8], object.type);
+  writer.writeString(offsets[9], object.uuid);
+  writer.writeLong(offsets[10], object.width);
 }
 
 Message _messageDeserialize(
@@ -139,12 +145,13 @@ Message _messageDeserialize(
   object.friendId = reader.readString(offsets[2]);
   object.height = reader.readLong(offsets[3]);
   object.id = id;
-  object.link = reader.readString(offsets[4]);
-  object.messageType = reader.readLong(offsets[5]);
-  object.saveTime = reader.readDateTime(offsets[6]);
-  object.type = reader.readLong(offsets[7]);
-  object.uuid = reader.readString(offsets[8]);
-  object.width = reader.readLong(offsets[9]);
+  object.isSend = reader.readLong(offsets[4]);
+  object.link = reader.readString(offsets[5]);
+  object.messageType = reader.readLong(offsets[6]);
+  object.saveTime = reader.readDateTime(offsets[7]);
+  object.type = reader.readLong(offsets[8]);
+  object.uuid = reader.readString(offsets[9]);
+  object.width = reader.readLong(offsets[10]);
   return object;
 }
 
@@ -164,16 +171,18 @@ P _messageDeserializeProp<P>(
     case 3:
       return (reader.readLong(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
-    case 6:
-      return (reader.readDateTime(offset)) as P;
-    case 7:
-      return (reader.readLong(offset)) as P;
-    case 8:
       return (reader.readString(offset)) as P;
+    case 6:
+      return (reader.readLong(offset)) as P;
+    case 7:
+      return (reader.readDateTime(offset)) as P;
+    case 8:
+      return (reader.readLong(offset)) as P;
     case 9:
+      return (reader.readString(offset)) as P;
+    case 10:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -785,6 +794,59 @@ extension MessageQueryFilter
     });
   }
 
+  QueryBuilder<Message, Message, QAfterFilterCondition> isSendEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isSend',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> isSendGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'isSend',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> isSendLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'isSend',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterFilterCondition> isSendBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'isSend',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Message, Message, QAfterFilterCondition> linkEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1312,6 +1374,18 @@ extension MessageQuerySortBy on QueryBuilder<Message, Message, QSortBy> {
     });
   }
 
+  QueryBuilder<Message, Message, QAfterSortBy> sortByIsSend() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSend', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterSortBy> sortByIsSendDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSend', Sort.desc);
+    });
+  }
+
   QueryBuilder<Message, Message, QAfterSortBy> sortByLink() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'link', Sort.asc);
@@ -1447,6 +1521,18 @@ extension MessageQuerySortThenBy
     });
   }
 
+  QueryBuilder<Message, Message, QAfterSortBy> thenByIsSend() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSend', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Message, Message, QAfterSortBy> thenByIsSendDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isSend', Sort.desc);
+    });
+  }
+
   QueryBuilder<Message, Message, QAfterSortBy> thenByLink() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'link', Sort.asc);
@@ -1548,6 +1634,12 @@ extension MessageQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Message, Message, QDistinct> distinctByIsSend() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isSend');
+    });
+  }
+
   QueryBuilder<Message, Message, QDistinct> distinctByLink(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1616,6 +1708,12 @@ extension MessageQueryProperty
   QueryBuilder<Message, int, QQueryOperations> heightProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'height');
+    });
+  }
+
+  QueryBuilder<Message, int, QQueryOperations> isSendProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isSend');
     });
   }
 

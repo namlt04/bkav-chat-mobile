@@ -121,7 +121,6 @@ class InputFieldState extends State<InputField>{
                           setState(() {
                             showFilePicker = true;
                           });
-                          files.clear();
                         }
                     }
                   ),
@@ -172,7 +171,6 @@ class InputFieldState extends State<InputField>{
       setState(() {
         showFilePicker = true;
       });
-      files.clear();
     }
   }
 }

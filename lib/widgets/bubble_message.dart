@@ -92,11 +92,16 @@ class BubbleMessageState extends State<BubbleMessage>{
                 );
       case 1:
         return
-          Image.file(
-              File('${AppUrl.path}${widget.message.link}'),
-              width: widget.message.width.toDouble(),
-              height: widget.message.height.toDouble(),
-              fit: BoxFit.contain,
+          GestureDetector(
+            onTap : () async {
+              await ApiServices.instance.getResource(widget.message.link);
+            },
+            child: Image.file(
+                File('${AppUrl.path}${widget.message.link}'),
+                width: widget.message.width.toDouble(),
+                height: widget.message.height.toDouble(),
+                fit: BoxFit.contain,
+            ),
           );
       case 2:
         return GestureDetector(
