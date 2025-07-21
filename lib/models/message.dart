@@ -14,6 +14,7 @@ class Message{
   late int type ;
   late String link ;
   late int messageType;
+  late int isSend;
   late int width;
   late int height;
   @Index()

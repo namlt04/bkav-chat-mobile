@@ -27,6 +27,7 @@ class MessageListState extends State<MessageList>{
       itemBuilder: (context, index) {
         final Message message = widget.list[index];
         bool _drawAvatar = false;
+        bool _drawTick  = false;
         // if ( index + 1 < widget.list.length ) {
         //   Message messageNext = widget.list[index + 1];
         //   if ( messageNext.messageType == 0)
@@ -37,10 +38,13 @@ class MessageListState extends State<MessageList>{
             Message messageNext = widget.list[index - 1];
             if (messageNext.messageType == 1)
               _drawAvatar = true;
-          } else if (message.messageType == 0)
-            _drawAvatar = true;
-          return BubbleMessage(message: message, drawAvatar: _drawAvatar);
+          } else {
+            if (message.messageType == 0)
+              _drawAvatar = true;
+            _drawTick = true;
+          }
         }
+          return BubbleMessage(message: message, drawAvatar: _drawAvatar, drawTick: _drawTick);
       }
 
     );

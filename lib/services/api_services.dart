@@ -276,6 +276,7 @@ class ApiServices
           message.createAt = DateTime.parse(item['CreatedAt']);
           message.saveTime = DateTime.now();
           message.messageType = item['MessageType'];
+          message.isSend = item['isSend'];
           list.add(message);
         }
         if ( item['Files'].length != 0 ){
@@ -291,6 +292,7 @@ class ApiServices
               message.createAt =DateTime.parse(item['CreatedAt']);
               message.saveTime = DateTime.now();
               message.messageType = item['MessageType'];
+              message.isSend = item['isSend'];
               list.add(message);
             }
         }
@@ -332,6 +334,7 @@ class ApiServices
             message.friendId = friendId;
             message.createAt = DateTime.parse(item['CreatedAt']);
             message.saveTime = DateTime.now();
+            message.isSend = item['isSend'];
             message.messageType = item['MessageType'];
             list.add(message);
           }

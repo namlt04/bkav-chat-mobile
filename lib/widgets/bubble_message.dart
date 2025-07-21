@@ -6,7 +6,8 @@ import 'package:untitled/services/api_services.dart';
 class BubbleMessage extends StatefulWidget{
   final Message message;
   final bool drawAvatar;
-  BubbleMessage({required this.message, required this.drawAvatar});
+  final bool drawTick;
+  BubbleMessage({required this.message, required this.drawAvatar, required this.drawTick});
   @override
   State<StatefulWidget> createState() {
     return BubbleMessageState();
@@ -22,47 +23,60 @@ class BubbleMessageState extends State<BubbleMessage>{
     return
           // if (widget.message.messageType == 0) Image.asset("assets/images/user.png"),
           // Container(
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: widget.message.messageType == 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
+          Column(
             children: [
-              if (widget.message.messageType == 0 )
-               //  Padding(
-               //    padding: widget.drawAvatar ?  EdgeInsets.only(left: 8) : EdgeInsets.only(left: 38),
-               //  child : widget.drawAvatar ?  Image.asset('assets/Images/user.png', width: 30, height: 30 ) : SizedBox.shrink() ,
-               // ),
-              SizedBox(
-               width : 38,
-               child : widget.drawAvatar ? Image.asset('assets/Images/user.png', width: 30, height: 30) : SizedBox.shrink(),
-              ),
-              Padding (
-                  padding: const EdgeInsets.only(
-                    left: 12,
-                    right: 12,
-                    top : 5,
-                    bottom: 5
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: widget.message.messageType == 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
+                children: [
+                  if (widget.message.messageType == 0 )
+                   //  Padding(
+                   //    padding: widget.drawAvatar ?  EdgeInsets.only(left: 8) : EdgeInsets.only(left: 38),
+                   //  child : widget.drawAvatar ?  Image.asset('assets/Images/user.png', width: 30, height: 30 ) : SizedBox.shrink() ,
+                   // ),
+                  SizedBox(
+                   width : 38,
+                   child : widget.drawAvatar ? Image.asset('assets/Images/user.png', width: 30, height: 30) : SizedBox.shrink(),
                   ),
-              child : Align(
+                  Padding (
+                      padding: const EdgeInsets.only(
+                        left: 12,
+                        right: 12,
+                        top : 5,
+                        bottom: 5
+                      ),
+                  child : Align(
 
-                  // alignment: Alignment.centerLeft,
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth: App.width * 0.55,
-                    ),
-                    padding: EdgeInsets.all(5),
-                    child: buildWidgetContent(),
+                      // alignment: Alignment.centerLeft,
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: App.width * 0.55,
+                        ),
+                        padding: EdgeInsets.all(5),
+                        child: buildWidgetContent(),
 
-                    decoration: BoxDecoration(
-                          color :  widget.message.messageType == 0 ? Color(0xFF20a090) : Color(0xff057ee1),
-                          borderRadius: BorderRadius.circular(10),
-                    ),
-                  )
+                        decoration: BoxDecoration(
+                              color :  widget.message.messageType == 0 ? Color(0xFF20a090) : Color(0xff057ee1),
+                              borderRadius: BorderRadius.circular(10),
+                        ),
+                      )
 
 
-    )),
+                  )),
 
+                ],
+                  ),
+               if (widget.drawTick)
+                 Row(
+                   mainAxisAlignment: widget.message.messageType == 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
+                   children: [
+                     Icon(
+                       widget.message.isSend == 0 ? Icons.done : Icons.done_all
+                     )
+                   ],
+                 )
             ],
-    );
+          );
     }
   Widget buildWidgetContent(){
     print('Da duoc goi toi buildWidgetContent');
